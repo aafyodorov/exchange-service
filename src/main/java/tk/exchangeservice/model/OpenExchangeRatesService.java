@@ -2,6 +2,7 @@ package tk.exchangeservice.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 import tk.exchangeservice.clients.OpenExchangeRatesClient;
 import tk.exchangeservice.dto.Rates;
@@ -15,7 +16,8 @@ import java.time.format.DateTimeFormatter;
  */
 
 @Component
-public class OpenExchangeRatesHandler {
+@PropertySource("classpath:/openexchangerates.properties")
+public class OpenExchangeRatesService {
 	private OpenExchangeRatesClient openExchangeRatesClient;
 	@Value("${openexchangerates.appId}")
 	private String appId;
@@ -31,8 +33,12 @@ public class OpenExchangeRatesHandler {
 		String yesterday = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 		Rates todayRates = openExchangeRatesClient.getLatestRates(appId , base, currency);
 		Rates yesterdayRates = openExchangeRatesClient.getHistoricalRates(appId, base, currency, yesterday);
-		double currentRate = Double.parseDouble(todayRates.getRates().get(currency));
-		double lastRate = Double.parseDouble(yesterdayRates.getRates().get(currency));
+		if (todayRates.getRates().size() == 0 || yesterdayRates.getRates().size() == 0)
+			throw new IllegalArgumentException();
+		Double currentRate = todayRates.getRates().get(currency);
+		Double lastRate = yesterdayRates.getRates().get(currency);
+		if (currentRate == null || lastRate == null)
+			throw new IllegalArgumentException();
 		return currentRate > lastRate;
 	}
 }

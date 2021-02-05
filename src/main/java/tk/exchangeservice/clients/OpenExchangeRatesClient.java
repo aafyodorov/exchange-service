@@ -1,6 +1,9 @@
 package tk.exchangeservice.clients;
 
+import feign.codec.ErrorDecoder;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +16,8 @@ import tk.exchangeservice.dto.Rates;
  */
 
 @PropertySource("classpath:/openexchangerates.properties")
-@FeignClient(name = "openexchange", url = "${openexchangerates.apiURI}")
+@FeignClient(name = "openexchange", url = "${openexchangerates.apiURI}", configuration =
+	OpenExchangeRatesClientConfig.class)
 public interface OpenExchangeRatesClient {
 	@GetMapping("${openexchangerates.latest}")
 	Rates getLatestRates(@RequestParam(value = "app_id") String app_id,
@@ -25,4 +29,14 @@ public interface OpenExchangeRatesClient {
                             @RequestParam(value = "base") String base,
 							@RequestParam(value = "symbols") String symbols,
 							@PathVariable(value = "date") String date);
+}
+
+@Configuration
+class OpenExchangeRatesClientConfig {
+	@Bean
+	ErrorDecoder decoder() {
+		//Logger logger = LoggerFactory.getLogger(this.getClass());
+//TODO rewrite
+		return (s, response) -> new Exception(response.body().toString());
+	}
 }

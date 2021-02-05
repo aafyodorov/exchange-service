@@ -29,7 +29,7 @@ public class Rates {
     @JsonProperty("base")
     private String base;
     @JsonProperty("rates")
-    private Map<String, String> rates;
+    private Map<String, Double> rates;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<>();
 
@@ -74,12 +74,12 @@ public class Rates {
     }
 
     @JsonProperty("rates")
-    public Map<String, String> getRates() {
+    public Map<String, Double> getRates() {
         return rates;
     }
 
     @JsonProperty("rates")
-    public void setRates(Map<String, String> rates) {
+    public void setRates(Map<String, Double> rates) {
         this.rates = rates;
     }
 

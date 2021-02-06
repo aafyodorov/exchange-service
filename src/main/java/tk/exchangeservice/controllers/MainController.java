@@ -26,7 +26,7 @@ public class MainController {
 		this.ratesService = ratesService;
 	}
 
-	@GetMapping
+	@GetMapping("/gif")
 	public ModelAndView getGif(@RequestParam(name = "cur") String currency) {
 		try {
 			if (ratesService.isRateGrowth(currency)) {

@@ -35,8 +35,6 @@ public interface OpenExchangeRatesClient {
 class OpenExchangeRatesClientConfig {
 	@Bean
 	ErrorDecoder decoder() {
-		//Logger logger = LoggerFactory.getLogger(this.getClass());
-//TODO rewrite
 		return (s, response) -> new Exception(response.body().toString());
 	}
 }

@@ -2,14 +2,22 @@ package tk.exchangeservice.controllers;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+import tk.exchangeservice.clients.GiphyClient;
+import tk.exchangeservice.clients.OpenExchangeRatesClient;
+import tk.exchangeservice.dto.ModelAndViewErrorMessageBuilder;
+import tk.exchangeservice.model.GiphyService;
 import tk.exchangeservice.model.OpenExchangeRatesService;
+
+import java.net.URI;
 
 /**
  * * @author Andrey Fyodorov
@@ -17,38 +25,62 @@ import tk.exchangeservice.model.OpenExchangeRatesService;
  */
 
 @Controller
-@EnableFeignClients
+@PropertySource("classpath:/giphy.properties")
 public class MainController {
 	private OpenExchangeRatesService ratesService;
+	private GiphyService giphyService;
+	private ModelAndViewErrorMessageBuilder messageBuilder;
+	@Value("${giphy.broke}")
+	private String BROKE;
+	@Value("${giphy.rich}")
+	private String RICH;
+	@Autowired
+	@Qualifier(value = "builder")
+	public void setMessageBuilder(ModelAndViewErrorMessageBuilder messageBuilder) {
+		this.messageBuilder = messageBuilder;
+	}
 
 	@Autowired
 	public void setRatesService(OpenExchangeRatesService ratesService) {
 		this.ratesService = ratesService;
 	}
 
+	@Autowired
+	public void setGiphyClient(GiphyService giphyService) {
+		this.giphyService = giphyService;
+	}
+
 	@GetMapping("/gif")
-	public ModelAndView getGif(@RequestParam(name = "cur") String currency) {
+	public ModelAndView getGif(@RequestParam(name = "cur", required = false) String currency) {
+		if (currency == null) {
+			return messageBuilder.setStatus(400).setMessage("no_cur_parameter")
+				.setDescription("Required parameter 'cur' is not present. Add").build();
+		}
 		try {
+			String gifTag;
 			if (ratesService.isRateGrowth(currency)) {
-				return new ModelAndView("redirect:https://media2.giphy.com/media/lptjRBxFKCJmFoibP3/giphy.gif?cid=ecf05e47ah83n7upu2c6kojzn5f3lzj39z822ad5sxln5z4u&rid=giphy.gif");
+				gifTag = RICH;
 			} else {
-				return new ModelAndView("redirect:https://media4.giphy.com/media/1ppudqsvJAWPa63iLU/giphy.gif?cid=ecf05e47dtlpm2zhyumg1nfjpgo8bwrsmyoi621om659cf6f&rid=giphy.gif");
+				gifTag = BROKE;
 			}
+			URI gifUri = giphyService.getGif(gifTag);
+			return new ModelAndView("redirect:" + gifUri.toString());
 		} catch (IllegalArgumentException ex) {
-			ModelAndView mav = new ModelAndView(new MappingJackson2JsonView());
-			mav.addObject("status", "400");
-			mav.addObject("message", "invalid_currency_code");
-			mav.addObject("description", "The currency code must be three letters long." +
-				"The list of currencies is available here: https://docs.openexchangerates" +
-				".org/docs/supported-currencies");
-			return mav;
+			messageBuilder.setStatus(400).setMessage("invalid_currency_code")
+				.setDescription("The currency code must be three letters long. The list of currencies is available here:" +
+					" https://docs.openexchangerates.org/docs/supported-currencies");
+			return messageBuilder.build();
 		} catch (Exception ex) {
 			JSONObject jsonObject = new JSONObject(ex.getCause().getMessage());
-			ModelAndView mav = new ModelAndView(new MappingJackson2JsonView());
-			mav.addObject("status", jsonObject.getInt("status"));
-			mav.addObject("message", jsonObject.getString("message"));
-			mav.addObject("description", jsonObject.getString("description"));
-			return mav;
+			String causedClassName = jsonObject.getJSONArray("source").get(0).toString().split("#")[0];
+			messageBuilder.setMessage(jsonObject.getString("message"));
+			if (causedClassName.contains(OpenExchangeRatesClient.class.getSimpleName())) {
+				messageBuilder.setStatus(jsonObject.getInt("status")).setDescription(jsonObject.getString(
+					"description"));
+			} else if (causedClassName.contains(GiphyClient.class.getSimpleName())) {
+				messageBuilder.setStatus(400).setDescription(jsonObject.getString("message"));
+			}
+			return messageBuilder.build();
 		}
 	}
 }

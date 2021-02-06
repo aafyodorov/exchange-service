@@ -1,6 +1,7 @@
 package tk.exchangeservice.clients;
 
 import feign.codec.ErrorDecoder;
+import org.json.JSONObject;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,8 +34,12 @@ public interface OpenExchangeRatesClient {
 
 @Configuration
 class OpenExchangeRatesClientConfig {
-	@Bean
+	@Bean("exchangeClientDecoder")
 	ErrorDecoder decoder() {
-		return (s, response) -> new Exception(response.body().toString());
+		return (s, response) -> {
+			JSONObject jsonObject = new JSONObject(response.body().toString());
+			jsonObject.append("source", s);
+			return new Exception(jsonObject.toString());
+		};
 	}
 }

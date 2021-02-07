@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @RunWith(SpringRunner.class)
 @AutoConfigureMockMvc
+//@WebMvcTest(MainController.class)
 public class MainControllerTestMocked {
 
 	@Autowired
@@ -36,11 +38,11 @@ public class MainControllerTestMocked {
 	@MockBean
 	GiphyService giphyServiceMocked;
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test//(expected = IllegalArgumentException.class)
 	public void getGif_getGifThrowIllegalArgumentException() throws Exception {
 		when(giphyServiceMocked.getGif(anyString())).thenThrow(IllegalArgumentException.class);
 		//controller.getGif(anyString());
 		mockMvc.perform(get("/gif?cur=RUB"));
-		//mockMvc.perform(get("/gif?cur=RUB")).andDo(print()).andExpect(status().is(400));
+		mockMvc.perform(get("/gif?cur=RUB")).andDo(print()).andExpect(status().is(400));
 	}
 }

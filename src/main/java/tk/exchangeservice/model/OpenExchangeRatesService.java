@@ -2,8 +2,7 @@ package tk.exchangeservice.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import tk.exchangeservice.clients.OpenExchangeRatesClient;
 import tk.exchangeservice.dto.Rates;
 
@@ -15,7 +14,7 @@ import java.time.format.DateTimeFormatter;
  * * Created on 03.02.2021.
  */
 
-@Component
+@Service
 public class OpenExchangeRatesService {
 	private OpenExchangeRatesClient openExchangeRatesClient;
 	@Value("${openexchangerates.appId}")

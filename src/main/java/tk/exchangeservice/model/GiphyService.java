@@ -2,8 +2,7 @@ package tk.exchangeservice.model;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import tk.exchangeservice.clients.GiphyClient;
 import tk.exchangeservice.dto.giphy.GiphyRandomGifResponse;
 
@@ -14,7 +13,7 @@ import java.net.URI;
  * * Created on 06.02.2021.
  */
 
-@Component
+@Service
 public class GiphyService {
 	private GiphyClient giphyClient;
 	@Value("${giphy.appId}")

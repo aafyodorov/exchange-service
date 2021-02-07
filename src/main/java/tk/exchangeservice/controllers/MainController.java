@@ -48,6 +48,10 @@ public class MainController {
 		this.giphyService = giphyService;
 	}
 
+	public GiphyService getGiphyService() {
+		return giphyService;
+	}
+
 	@GetMapping("/gif")
 	public ModelAndView getGif(@RequestParam(name = "cur", required = false) String currency) {
 		if (currency == null) {

@@ -4,7 +4,6 @@ import feign.codec.ErrorDecoder;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import tk.exchangeservice.dto.giphy.GiphyRandomGifResponse;
@@ -14,7 +13,6 @@ import tk.exchangeservice.dto.giphy.GiphyRandomGifResponse;
  * * Created on 06.02.2021.
  */
 
-@PropertySource("classpath:/giphy.properties")
 @FeignClient(name = "giphyClient", url = "${giphy.apiURI}", configuration = GiphyClientConfiguration.class)
 public interface GiphyClient {
 	@GetMapping("${giphy.random}")

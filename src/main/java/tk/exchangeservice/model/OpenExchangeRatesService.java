@@ -16,7 +16,6 @@ import java.time.format.DateTimeFormatter;
  */
 
 @Component
-@PropertySource("classpath:/openexchangerates.properties")
 public class OpenExchangeRatesService {
 	private OpenExchangeRatesClient openExchangeRatesClient;
 	@Value("${openexchangerates.appId}")

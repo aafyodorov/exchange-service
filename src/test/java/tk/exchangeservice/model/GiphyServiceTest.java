@@ -17,7 +17,6 @@ import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-@PropertySource("classpath:/giphy.properties")
 @RunWith(SpringRunner.class)
 public class GiphyServiceTest {
 	private final String SUCCESS_RICH_URI = "https://stub-for-uri-rich.gif";

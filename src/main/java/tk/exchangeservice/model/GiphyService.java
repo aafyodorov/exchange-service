@@ -15,7 +15,6 @@ import java.net.URI;
  */
 
 @Component
-@PropertySource("classpath:/giphy.properties")
 public class GiphyService {
 	private GiphyClient giphyClient;
 	@Value("${giphy.appId}")

@@ -1,7 +1,9 @@
 package tk.exchangeservice.dto;
 
+import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Scope;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
@@ -48,6 +50,7 @@ public class ModelAndViewErrorMessageBuilder {
 		}
 		if (status != 0) {
 			modelAndView.addObject("status", status);
+			modelAndView.setStatus(HttpStatus.valueOf(status));
 		}
 		if (description != null) {
 			modelAndView.addObject("description", description);

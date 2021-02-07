@@ -16,7 +16,6 @@ import tk.exchangeservice.dto.Rates;
  * * Created on 03.02.2021.
  */
 
-@PropertySource("classpath:/openexchangerates.properties")
 @FeignClient(name = "openexchange", url = "${openexchangerates.apiURI}", configuration =
 	OpenExchangeRatesClientConfig.class)
 public interface OpenExchangeRatesClient {

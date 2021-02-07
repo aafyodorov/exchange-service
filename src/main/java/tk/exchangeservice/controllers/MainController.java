@@ -9,7 +9,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 import tk.exchangeservice.clients.GiphyClient;
 import tk.exchangeservice.clients.OpenExchangeRatesClient;
@@ -25,7 +24,6 @@ import java.net.URI;
  */
 
 @Controller
-@PropertySource("classpath:/giphy.properties")
 public class MainController {
 	private OpenExchangeRatesService ratesService;
 	private GiphyService giphyService;

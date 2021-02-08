@@ -25,6 +25,6 @@ public class MainControllerTest {
 	public void getGif_noRequiredParameter() throws Exception{
 		mockMvc.perform(get("/gif"))
 			.andExpect(status().is(400))
-			.andExpect(content().string(containsString("no_cur_parameter")));
+			.andExpect(content().string(containsString("Required parameter 'cur' is not present. Add")));
 	}
 }

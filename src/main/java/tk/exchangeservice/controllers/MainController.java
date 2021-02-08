@@ -2,13 +2,11 @@ package tk.exchangeservice.controllers;
 
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import tk.exchangeservice.clients.GiphyClient;
 import tk.exchangeservice.clients.OpenExchangeRatesClient;
 import tk.exchangeservice.model.GiphyService;
@@ -41,7 +39,7 @@ public class MainController {
 	}
 
 	@GetMapping("/gif")
-	public ResponseEntity<String> getGif(@RequestParam(name = "cur", required = false) String currency) {
+	public ResponseEntity<String> getGifUri(@RequestParam(name = "cur", required = false) String currency) {
 		if (currency == null) {
 			return ResponseEntity
 				.status(400)
@@ -70,9 +68,11 @@ public class MainController {
 			int status;
 			String message;
 			JSONObject body = new JSONObject();
-			JSONObject jsonObject = new JSONObject(ex.getCause().getMessage());
+			Throwable th = ex.getCause();
+			String errMsg = th.getMessage();
+			JSONObject jsonObject = new JSONObject(errMsg);
 
-			String causedClassName = jsonObject.getJSONArray("source").get(0).toString().split("#")[0];
+			String causedClassName = jsonObject.get("source").toString().split("#")[0];
 			if (causedClassName.contains(OpenExchangeRatesClient.class.getSimpleName())) {
 				message = jsonObject.getString("description");
 				status = jsonObject.getInt("status");

@@ -1,10 +1,10 @@
 package tk.exchangeservice.clients;
 
 import feign.codec.ErrorDecoder;
-import org.json.JSONObject;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import tk.exchangeservice.exceptionsAndHandlers.FeignClientException;
+import tk.exchangeservice.exceptionsAndHandlers.GiphyClientRuntimeException;
+import tk.exchangeservice.exceptionsAndHandlers.OpenExchangeRatesClientRuntimeException;
 
 /**
  * * @author Andrey Fyodorov
@@ -15,10 +15,13 @@ import tk.exchangeservice.exceptionsAndHandlers.FeignClientException;
 public class FeignClientsConfig {
 	@Bean("exchangeClientDecoder")
 	ErrorDecoder decoder() {
-		return (s, response) -> {
-			JSONObject jsonObject = new JSONObject(response.body().toString());
-			jsonObject.put("source", s);
-			return new FeignClientException(jsonObject.toString());
+	  return (s, response) -> {
+	    String classKey = s.split("#")[0];
+		  return switch (classKey) {
+			case "GiphyClient" -> new GiphyClientRuntimeException(response.body().toString());
+			case "OpenExchangeRatesClient" -> new OpenExchangeRatesClientRuntimeException(response.body().toString());
+			default -> throw new IllegalArgumentException();
+		  };
 		};
 	}
 }

@@ -5,9 +5,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import tk.exchangeservice.clients.OpenExchangeRatesClient;
 import tk.exchangeservice.dto.Rates;
+import tk.exchangeservice.exceptionsAndHandlers.UnknownCurrencyCodeException;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 /**
  * * @author Andrey Fyodorov
@@ -28,15 +30,14 @@ public class OpenExchangeRatesService {
 	}
 
 	public boolean isRateGrowth(String currency) {
-		String yesterday = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-		Rates todayRates = openExchangeRatesClient.getLatestRates(appId , base, currency);
-		Rates yesterdayRates = openExchangeRatesClient.getHistoricalRates(appId, base, currency, yesterday);
-		if (todayRates.getRates().size() == 0 || yesterdayRates.getRates().size() == 0)
-			throw new IllegalArgumentException();
-		Double currentRate = todayRates.getRates().get(currency);
-		Double lastRate = yesterdayRates.getRates().get(currency);
-		if (currentRate == null || lastRate == null)
-			throw new IllegalArgumentException();
-		return currentRate > lastRate;
+	  currency = currency.toUpperCase(Locale.ROOT);
+	  String yesterday = LocalDateTime.now().minusDays(1).format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+	  Rates todayRates = openExchangeRatesClient.getLatestRates(appId , base, currency);
+	  Rates yesterdayRates = openExchangeRatesClient.getHistoricalRates(appId, base, currency, yesterday);
+	  if (todayRates.getRates().size() == 0 || yesterdayRates.getRates().size() == 0)
+		throw new UnknownCurrencyCodeException();
+	  Double currentRate = todayRates.getRates().get(currency);
+	  Double lastRate = yesterdayRates.getRates().get(currency);
+	  return currentRate > lastRate;
 	}
 }

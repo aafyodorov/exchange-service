@@ -18,26 +18,26 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
-	@ExceptionHandler(value = {
-		GiphyClientRuntimeException.class,
-		OpenExchangeRatesClientRuntimeException.class
-	})
-	protected ResponseEntity<Object> handleFeignClientExceptions(RuntimeException ex, WebRequest request) {
-	  int status;
-	  JSONObject body = new JSONObject();
-	  HttpHeaders headers = new HttpHeaders();
+  @ExceptionHandler(value = {
+	  GiphyClientRuntimeException.class,
+	  OpenExchangeRatesClientRuntimeException.class
+  })
+  public ResponseEntity<Object> handleFeignClientExceptions(RuntimeException ex, WebRequest request) {
+	int status;
+	JSONObject body = new JSONObject();
+	HttpHeaders headers = new HttpHeaders();
 
-	  headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
-	  JSONObject jsonObject = new JSONObject(ex.getMessage());
-	  if (ex instanceof OpenExchangeRatesClientRuntimeException) {
-	    body.put("message", jsonObject.get("description"));
-	    status = jsonObject.getInt("status");
-	  } else {
-		body.put("message", jsonObject.getString("message"));
-		status = 401;
-	  }
-	  return handleExceptionInternal(ex, body.toString(), headers, HttpStatus.valueOf(status), request);
+	headers.add(HttpHeaders.CONTENT_TYPE, "application/json");
+	JSONObject jsonObject = new JSONObject(ex.getMessage());
+	if (ex instanceof OpenExchangeRatesClientRuntimeException) {
+	  body.put("message", jsonObject.get("description"));
+	  status = jsonObject.getInt("status");
+	} else {
+	  body.put("message", jsonObject.getString("message"));
+	  status = 401;
 	}
+	return handleExceptionInternal(ex, body.toString(), headers, HttpStatus.valueOf(status), request);
+  }
 
   @Override
   protected @NotNull ResponseEntity<Object> handleMissingServletRequestParameter(

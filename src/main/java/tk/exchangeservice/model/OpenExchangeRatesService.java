@@ -38,6 +38,8 @@ public class OpenExchangeRatesService {
 		throw new UnknownCurrencyCodeException();
 	  Double currentRate = todayRates.getRates().get(currency);
 	  Double lastRate = yesterdayRates.getRates().get(currency);
+	  if (currentRate == null || lastRate == null)
+		throw new UnknownCurrencyCodeException();
 	  return currentRate > lastRate;
 	}
 }

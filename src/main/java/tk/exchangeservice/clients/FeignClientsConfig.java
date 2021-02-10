@@ -13,7 +13,7 @@ import tk.exchangeservice.exceptionsAndHandlers.OpenExchangeRatesClientRuntimeEx
 
 @Configuration
 public class FeignClientsConfig {
-	@Bean("exchangeClientDecoder")
+	@Bean("feignClientErrorDecoder")
 	ErrorDecoder decoder() {
 	  return (s, response) -> {
 	    String classKey = s.split("#")[0];

@@ -36,7 +36,7 @@ public class MainController {
 	}
 
 	@GetMapping("/gif")
-	public ResponseEntity<String> getGifUri(@RequestParam(name = "cur"/*, required = false*/) String currency) {
+	public ResponseEntity<String> getGifUri(@RequestParam(name = "cur") String currency) {
 			String gifTag;
 
 			if (ratesService.isRateGrowth(currency)) {

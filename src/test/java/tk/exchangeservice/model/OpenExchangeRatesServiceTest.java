@@ -8,6 +8,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import tk.exchangeservice.clients.OpenExchangeRatesClient;
 import tk.exchangeservice.dto.Rates;
+import tk.exchangeservice.exceptionsAndHandlers.UnknownCurrencyCodeException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,76 +21,76 @@ import static org.mockito.Mockito.when;
 @RunWith(SpringRunner.class)
 public class OpenExchangeRatesServiceTest {
 
-	@MockBean
-	private OpenExchangeRatesClient mockOpenExchangeRatesClient;
+  @MockBean
+  private OpenExchangeRatesClient mockOpenExchangeRatesClient;
 
-	@Autowired
-	private OpenExchangeRatesService exchangeRatesService;
+  @Autowired
+  private OpenExchangeRatesService exchangeRatesService;
 
-	@Test
-	public void isRateGrowth_TodayRateBigger() {
-		String curName = "RUB";
+  @Test
+  public void isRateGrowth_TodayRateBigger() {
+	String curName = "RUB";
 
-		Rates mockTodayRates = createOneCurrencyRate(curName, 123.24);
-		Rates mockHistoricalRates = createOneCurrencyRate(curName, 98.32);
+	Rates mockTodayRates = createOneCurrencyRate(curName, 123.24);
+	Rates mockHistoricalRates = createOneCurrencyRate(curName, 98.32);
 
-		when(mockOpenExchangeRatesClient.getLatestRates(anyString(), anyString(), anyString()))
-			.thenReturn(mockTodayRates);
-		when(mockOpenExchangeRatesClient.getHistoricalRates(anyString(), anyString(), anyString(), anyString()))
-			.thenReturn(mockHistoricalRates);
+	when(mockOpenExchangeRatesClient.getLatestRates(anyString(), anyString(), anyString()))
+		.thenReturn(mockTodayRates);
+	when(mockOpenExchangeRatesClient.getHistoricalRates(anyString(), anyString(), anyString(), anyString()))
+		.thenReturn(mockHistoricalRates);
 
-		assertThat(exchangeRatesService.isRateGrowth(curName)).isTrue();
-	}
+	assertThat(exchangeRatesService.isRateGrowth(curName)).isTrue();
+  }
 
-	@Test
-	public void isRateGrowth_yesterdayRateBigger() {
-		String curName = "RUB";
+  @Test
+  public void isRateGrowth_yesterdayRateBigger() {
+	String curName = "RUB";
 
-		Rates mockTodayRates = createOneCurrencyRate(curName, 54.22);
-		Rates mockHistoricalRates = createOneCurrencyRate(curName, 55.03);
+	Rates mockTodayRates = createOneCurrencyRate(curName, 54.22);
+	Rates mockHistoricalRates = createOneCurrencyRate(curName, 55.03);
 
-		when(mockOpenExchangeRatesClient.getLatestRates(anyString(), anyString(), anyString()))
-			.thenReturn(mockTodayRates);
-		when(mockOpenExchangeRatesClient.getHistoricalRates(anyString(), anyString(), anyString(), anyString()))
-			.thenReturn(mockHistoricalRates);
+	when(mockOpenExchangeRatesClient.getLatestRates(anyString(), anyString(), anyString()))
+		.thenReturn(mockTodayRates);
+	when(mockOpenExchangeRatesClient.getHistoricalRates(anyString(), anyString(), anyString(), anyString()))
+		.thenReturn(mockHistoricalRates);
 
-		assertThat(exchangeRatesService.isRateGrowth(curName)).isFalse();
-	}
+	assertThat(exchangeRatesService.isRateGrowth(curName)).isFalse();
+  }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void isRateGrowth_wrongCurrencyCode() {
-		String curName = "zzz";
-		Rates mockTodayRates = new Rates();
-		mockTodayRates.setRates(new HashMap<>(0));
+  @Test(expected = UnknownCurrencyCodeException.class)
+  public void isRateGrowth_wrongCurrencyCode() {
+	String curName = "zzz";
+	Rates mockTodayRates = new Rates();
+	mockTodayRates.setRates(new HashMap<>(0));
 
-		when(mockOpenExchangeRatesClient.getLatestRates(anyString(), anyString(), anyString()))
-			.thenReturn(mockTodayRates);
-		when(mockOpenExchangeRatesClient.getHistoricalRates(anyString(), anyString(), anyString(), anyString()))
-			.thenReturn(mockTodayRates);
+	when(mockOpenExchangeRatesClient.getLatestRates(anyString(), anyString(), anyString()))
+		.thenReturn(mockTodayRates);
+	when(mockOpenExchangeRatesClient.getHistoricalRates(anyString(), anyString(), anyString(), anyString()))
+		.thenReturn(mockTodayRates);
 
-		exchangeRatesService.isRateGrowth(curName);
-	}
+	exchangeRatesService.isRateGrowth(curName);
+  }
 
-	@Test(expected = IllegalArgumentException.class)
-	public void isRateGrowth_curParameterWithoutValue() {
-		String curName = "RUB";
-		Rates mockTodayRates = createOneCurrencyRate(curName, null);
-		Rates mockHistoricalRates = createOneCurrencyRate(curName, null);
+  @Test(expected = UnknownCurrencyCodeException.class)
+  public void isRateGrowth_curParameterWithoutValue() {
+	String curName = "RUB";
+	Rates mockTodayRates = createOneCurrencyRate(curName, null);
+	Rates mockHistoricalRates = createOneCurrencyRate(curName, null);
 
-		when(mockOpenExchangeRatesClient.getLatestRates(anyString(), anyString(), anyString()))
-			.thenReturn(mockTodayRates);
-		when(mockOpenExchangeRatesClient.getHistoricalRates(anyString(), anyString(), anyString(), anyString()))
-			.thenReturn(mockHistoricalRates);
+	when(mockOpenExchangeRatesClient.getLatestRates(anyString(), anyString(), anyString()))
+		.thenReturn(mockTodayRates);
+	when(mockOpenExchangeRatesClient.getHistoricalRates(anyString(), anyString(), anyString(), anyString()))
+		.thenReturn(mockHistoricalRates);
 
-		exchangeRatesService.isRateGrowth(curName);
-	}
+	exchangeRatesService.isRateGrowth(curName);
+  }
 
-	@org.jetbrains.annotations.NotNull
-	private Rates createOneCurrencyRate(String currency, Double value) {
-		Map<String, Double> latestRateMap = new HashMap<>();
-		latestRateMap.put(currency, value);
-		Rates rates = new Rates();
-		rates.setRates(latestRateMap);
-		return rates;
-	}
+  @org.jetbrains.annotations.NotNull
+  private Rates createOneCurrencyRate(String currency, Double value) {
+	Map<String, Double> latestRateMap = new HashMap<>();
+	latestRateMap.put(currency, value);
+	Rates rates = new Rates();
+	rates.setRates(latestRateMap);
+	return rates;
+  }
 }

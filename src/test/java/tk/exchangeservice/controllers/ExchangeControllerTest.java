@@ -21,12 +21,12 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @RunWith(SpringRunner.class)
-@WebMvcTest(MainController.class)
-public class MainControllerTest {
+@WebMvcTest(ExchangeController.class)
+public class ExchangeControllerTest {
   @Autowired
   private MockMvc mockMvc;
   @Autowired
-  MainController controller;
+  ExchangeController controller;
   @MockBean
   OpenExchangeRatesService openExchangeRatesServiceMocked;
   @MockBean

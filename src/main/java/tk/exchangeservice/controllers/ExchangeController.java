@@ -17,7 +17,7 @@ import java.net.URI;
  */
 
 @Controller
-public class MainController {
+public class ExchangeController {
 	private OpenExchangeRatesService ratesService;
 	private GiphyService giphyService;
 	@Value("${giphy.broke}")

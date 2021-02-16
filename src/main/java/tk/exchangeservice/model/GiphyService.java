@@ -1,5 +1,7 @@
 package tk.exchangeservice.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.net.URI;
 
 @Service
 public class GiphyService {
+  private final Logger logger = LoggerFactory.getLogger(GiphyService.class);
 	private GiphyClient giphyClient;
 	@Value("${giphy.appId}")
 	private String apiId;
@@ -29,8 +32,10 @@ public class GiphyService {
 	}
 
 	public URI getGif(String tag) {
-		if (!tag.equals(BROKE) && !tag.equals(RICH))
-			throw new IllegalArgumentException();
+		if (!tag.equals(BROKE) && !tag.equals(RICH)) {
+		  logger.error("Unresolved [{}: Unknown gif tag in 'getGif' method]", GiphyService.class);
+		  throw new IllegalArgumentException();
+		}
 		GiphyRandomGifResponse response = giphyClient.getRandomGif(apiId, tag);
 		return URI.create(response.getData().getImages().getDownsizedLarge().getUrl());
 	}

@@ -8,5 +8,3 @@ target/
 .idea
 *.iws
 *.iml
-
-src/main/resources/templates

@@ -2,7 +2,7 @@
 <configuration>
     <timestamp key="byDay" datePattern="yyyy-MM-dd"/>
     <appender name="roll-by-time-and-size" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${user.dir}/logs/exchange_service.log</file>
+        <file>${user.dir}/target/logs/exchange_service.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>
                 ${user.dir}/logs/exchange_service.%d{yyyy-MM-dd-HH}.%i.log.zip

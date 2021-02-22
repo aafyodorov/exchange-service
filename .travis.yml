@@ -1,0 +1,15 @@
+language: java
+
+jdk:
+  - openjdk15
+
+branches:
+  only:
+    - master
+
+script: ./mvnw package -DskipTests
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always

@@ -1,0 +1,10 @@
+version: '2'
+
+services:
+  exchange-service:
+    build: .
+    ports:
+    - "8080:8080"
+    environment:
+      - GIPHY_APP_ID
+      - OPEN_EXCH_RATES_APP_ID

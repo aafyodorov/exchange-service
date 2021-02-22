@@ -1,9 +1,8 @@
 FROM openjdk:15-alpine3.12
 
 WORKDIR /usr/exchange-service-app
-COPY . .
-RUN ./mvnw package -DskipTests
+COPY ./autobuild/exchange-service-*.jar .
 
-CMD ["java", "-jar", "./target/exchange-service-1.0.0.jar"]
+CMD java -jar exchange-service-*.jar
 
 EXPOSE 8080

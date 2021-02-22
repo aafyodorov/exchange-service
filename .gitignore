@@ -8,3 +8,4 @@ target/
 .idea
 *.iws
 *.iml
+logs*

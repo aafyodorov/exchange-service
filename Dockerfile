@@ -2,9 +2,9 @@ FROM openjdk:15-alpine3.12
 
 WORKDIR /usr/exchange-service-app
 COPY . .
-RUN ./mvnw package
+RUN ./mvnw package -DskipTests
 
-WORKDIR /usr/exchange-service-app/target
-CMD ["java", "-jar", "exchange-service-0.0.1-SNAPSHOT.jar"]
+#WORKDIR /usr/exchange-service-app/target
+CMD ["java", "-jar", "./target/exchange-service-1.0.0.jar"]
 
 EXPOSE 8080

@@ -1,4 +1,4 @@
-version: '2'
+version: "3.7"
 
 services:
   exchange-service:
@@ -8,3 +8,5 @@ services:
     environment:
       - GIPHY_APP_ID
       - OPEN_EXCH_RATES_APP_ID
+    volumes:
+      - ./logs_volume:/usr/exchange-service-app/logs

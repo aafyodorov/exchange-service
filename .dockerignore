@@ -1,0 +1,9 @@
+.idea
+logs
+logs_volume
+target
+.gitignore
+docker-compose.yml
+Dockerfile
+exchange-service.iml
+README.md

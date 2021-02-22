@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <timestamp key="byDay" datePattern="yyyy-MM-dd"/>
     <appender name="roll-by-time-and-size" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${user.dir}/target/logs/exchange_service.log</file>
+        <file>${user.dir}/logs/exchange_service.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
             <fileNamePattern>
-                ${user.dir}/logs/exchange_service.%d{yyyy-MM-dd-HH}.%i.log.zip
+                ${user.dir}/logs/exchange_service_%d{yyyy-MM-dd}/%d{yyyy-MM-dd-HH}.%i.log.zip
             </fileNamePattern>
             <maxFileSize>100MB</maxFileSize>
             <maxHistory>30</maxHistory>
@@ -18,5 +17,4 @@
     <root level="INFO">
         <appender-ref ref="roll-by-time-and-size" />
     </root>
-
 </configuration>

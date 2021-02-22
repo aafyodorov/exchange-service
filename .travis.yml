@@ -3,9 +3,11 @@ language: java
 jdk:
   - openjdk15
 
-branches:
-  only:
-    - master
+install:
+  - git checkout master
+  - chmod +x ./autobuild/push-app.sh
+after_success:
+  - ./autobuild/push-app.sh
 
 script: ./mvnw package -DskipTests
 

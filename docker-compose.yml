@@ -5,8 +5,7 @@ services:
     build: .
     ports:
     - "5000:8080"
-    environment:
-      - GIPHY_APP_ID
-      - OPEN_EXCH_RATES_APP_ID
+    env_file:
+      - .env
     volumes:
       - ./logs_volume:/usr/exchange-service-app/logs

@@ -10,7 +10,7 @@
     </parent>
     <groupId>tk.exchange-service</groupId>
     <artifactId>exchange-service</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>exchange-service</name>
     <description>Little exchange service with Spring boot</description>
     <properties>

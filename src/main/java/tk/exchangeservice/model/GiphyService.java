@@ -37,6 +37,7 @@ public class GiphyService {
 		  throw new IllegalArgumentException();
 		}
 		GiphyRandomGifResponse response = giphyClient.getRandomGif(apiId, tag);
-		return URI.create(response.getData().getImages().getDownsizedLarge().getUrl());
+		String uriReplaced = response.getData().getImageOriginalUrl().replaceFirst("media\\p{N}", "i");
+		return URI.create(uriReplaced);
 	}
 }
